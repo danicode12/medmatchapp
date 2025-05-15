@@ -18,7 +18,7 @@ struct SearchHomeView: View {
                 
                 VStack(spacing: 0) {
                     VStack(alignment: .leading, spacing: 24) {
-                        Text("Find a doctor")
+                        Text("Encuentra una cita")
                             .font(.largeTitle)
                             .fontWeight(.bold)
                             .foregroundColor(.black)
@@ -36,7 +36,7 @@ struct SearchHomeView: View {
                         Button(action: {
                             showingCareTypeSelection = true
                         }) {
-                            Text("Find care")
+                            Text("Buscar")
                                 .font(.headline)
                                 .foregroundColor(.black)
                                 .frame(maxWidth: .infinity)
@@ -47,7 +47,7 @@ struct SearchHomeView: View {
                         .padding(.horizontal)
                         
                         VStack(alignment: .leading, spacing: 16) {
-                            Text("Top-searched specialties")
+                            Text("Especialidades más buscadas")
                                 .font(.headline)
                                 .foregroundColor(.black)
                                 .padding(.horizontal)
@@ -73,27 +73,39 @@ struct SearchHomeView: View {
             }
             .navigationBarHidden(true)
             .background(
-                NavigationLink(
-                    destination: Group {
-                        if let specialty = selectedSpecialtyForNavigation {
-                            DoctorListView(
-                                searchQuery: "",
-                                location: viewModel.locationText,
-                                specialty: specialty,
-                                insurance: viewModel.selectedInsurance
-                            )
-                        } else {
-                            DoctorListView(
-                                searchQuery: viewModel.searchQuery,
-                                location: viewModel.locationText,
-                                specialty: viewModel.selectedSpecialty,
-                                insurance: viewModel.selectedInsurance
-                            )
-                        }
-                    },
-                    isActive: $navigateToDoctorList
-                ) {
-                    EmptyView()
+                // FIXED: Use two separate NavigationLinks instead of a Group
+                ZStack {
+                    // First NavigationLink for when specialty is selected
+                    NavigationLink(
+                        destination: DoctorListView(
+                            searchQuery: "",
+                            location: viewModel.locationText,
+                            specialty: selectedSpecialtyForNavigation,
+                            insurance: viewModel.selectedInsurance
+                        ),
+                        isActive: Binding(
+                            get: { navigateToDoctorList && selectedSpecialtyForNavigation != nil },
+                            set: { navigateToDoctorList = $0 }
+                        )
+                    ) {
+                        EmptyView()
+                    }
+                    
+                    // Second NavigationLink for when no specialty is selected
+                    NavigationLink(
+                        destination: DoctorListView(
+                            searchQuery: viewModel.searchQuery,
+                            location: viewModel.locationText,
+                            specialty: viewModel.selectedSpecialty,
+                            insurance: viewModel.selectedInsurance
+                        ),
+                        isActive: Binding(
+                            get: { navigateToDoctorList && selectedSpecialtyForNavigation == nil },
+                            set: { navigateToDoctorList = $0 }
+                        )
+                    ) {
+                        EmptyView()
+                    }
                 }
             )
             .sheet(isPresented: $showingCareTypeSelection) {
@@ -105,13 +117,10 @@ struct SearchHomeView: View {
                 .preferredColorScheme(.light)
             }
             .sheet(isPresented: $showingLocationPicker) {
-                LocationPickerView(
-                    searchText: $viewModel.locationSearchText,
-                    onSelectLocation: { location in
-                        viewModel.locationText = location
-                        showingLocationPicker = false
-                    }
-                )
+                // Use the enhanced LocationPickerView with the callback pattern
+                LocationPickerView { selectedLocation, coordinates in
+                    viewModel.updateLocation(address: selectedLocation, coordinates: coordinates)
+                }
                 .preferredColorScheme(.light)
             }
             .sheet(isPresented: $showingSpecialtyPicker) {

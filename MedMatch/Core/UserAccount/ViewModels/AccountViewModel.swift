@@ -2,7 +2,7 @@ import Foundation
 import Combine
 
 class AccountViewModel: ObservableObject {
-    @Published var isAuthenticated = false
+    @Published var isAuthenticated = true
     
     private let authService: AuthenticationServiceProtocol
     private var cancellables = Set<AnyCancellable>()

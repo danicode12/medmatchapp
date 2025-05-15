@@ -19,7 +19,7 @@ struct InsurancePickerView: View {
                 
                 Spacer()
                 
-                Text("Select insurance")
+                Text("Escoge tu plan médico")
                     .font(.headline)
                     .foregroundColor(.black)
                 
@@ -28,22 +28,22 @@ struct InsurancePickerView: View {
                 Button(action: {
                     dismiss()
                 }) {
-                    Text("Done")
+                    Text("Listo")
                         .fontWeight(.medium)
                         .foregroundColor(.blue)
                 }
             }
             .padding()
             
-            SearchBar(text: $searchText, placeholder: "Search for insurance", showScanButton: true)
+            SearchBar(text: $searchText, placeholder: "Busca tu plan", showScanButton: true)
                 .padding(.horizontal)
             
             VStack(alignment: .leading, spacing: 16) {
                 HStack {
                     VStack(alignment: .leading) {
-                        Text("Already have an account?")
+                        Text("Ya tienes una cuenta?")
                             .font(.headline)
-                        Text("Use your saved insurance")
+                        Text("Usa tu plan médico guardado")
                             .foregroundColor(.gray)
                     }
                     
@@ -67,7 +67,7 @@ struct InsurancePickerView: View {
                 .padding(.horizontal)
                 
                 HStack {
-                    Text("Popular options")
+                    Text("Opciones populare")
                         .font(.headline)
                     
                     Spacer()

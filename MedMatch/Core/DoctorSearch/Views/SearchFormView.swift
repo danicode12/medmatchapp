@@ -14,7 +14,7 @@ struct SearchFormView: View {
                 HStack {
                     Image(systemName: "magnifyingglass")
                         .foregroundColor(.gray)
-                    Text(searchText.isEmpty ? "Condition, procedure, doctor..." : searchText)
+                    Text(searchText.isEmpty ? "Especialidad, tratamiento, doctor..." : searchText)
                         .foregroundColor(searchText.isEmpty ? .gray : .black)
                     Spacer()
                 }
@@ -51,7 +51,7 @@ struct SearchFormView: View {
                         Text(insurance)
                             .foregroundColor(.black)
                     } else {
-                        Text("Add health insurance")
+                        Text("Escoge tu plan médico")
                             .foregroundColor(.gray)
                     }
                     Spacer()

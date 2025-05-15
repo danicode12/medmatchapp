@@ -2,7 +2,7 @@ import SwiftUI
 import Combine
 
 class AppCoordinator: ObservableObject {
-    @Published var isAuthenticated = false
+    @Published var isAuthenticated = true
     @Published var currentUser: User?
     @Published var selectedTab: TabSelection = .search
     

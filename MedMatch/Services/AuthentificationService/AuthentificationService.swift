@@ -14,7 +14,7 @@ protocol AuthenticationServiceProtocol {
 }
 
 class AuthenticationService: AuthenticationServiceProtocol {
-    @Published private var authState = AuthState(isAuthenticated: false, user: nil)
+    @Published private var authState = AuthState(isAuthenticated: true, user: nil)
     
     var authStatePublisher: AnyPublisher<AuthState, Never> {
         $authState.eraseToAnyPublisher()

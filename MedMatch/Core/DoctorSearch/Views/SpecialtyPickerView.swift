@@ -18,7 +18,7 @@ struct SpecialtyPickerView: View {
                             .padding()
                     }
                     
-                    Text("Search")
+                    Text("Buscar")
                         .font(.headline)
                         .frame(maxWidth: .infinity)
                     
@@ -33,7 +33,7 @@ struct SpecialtyPickerView: View {
                     .cornerRadius(8)
                     .padding(.horizontal)
                 
-                Text("Popular specialties")
+                Text("Especialidades populares")
                     .font(.headline)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding()

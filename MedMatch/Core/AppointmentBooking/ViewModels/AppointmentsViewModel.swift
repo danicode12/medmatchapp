@@ -2,7 +2,7 @@ import Foundation
 import Combine
 
 class AppointmentsViewModel: ObservableObject {
-    @Published var isAuthenticated = false
+    @Published var isAuthenticated = true
     @Published var appointments: [Appointment] = []
     @Published var upcomingAppointments: [Appointment] = []
     @Published var pastAppointments: [Appointment] = []

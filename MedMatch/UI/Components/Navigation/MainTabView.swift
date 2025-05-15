@@ -7,25 +7,25 @@ struct MainTabView: View {
         TabView(selection: $appCoordinator.selectedTab) {
             SearchHomeView()
                 .tabItem {
-                    Label("Search", systemImage: "magnifyingglass")
+                    Label("Buscar", systemImage: "magnifyingglass")
                 }
                 .tag(TabSelection.search)
             
             AppointmentsView()
                 .tabItem {
-                    Label("Appointments", systemImage: "calendar")
+                    Label("Citas", systemImage: "calendar")
                 }
                 .tag(TabSelection.appointments)
             
             MyDoctorsView()
                 .tabItem {
-                    Label("My Doctors", systemImage: "stethoscope")
+                    Label("Mis Doctores", systemImage: "stethoscope")
                 }
                 .tag(TabSelection.myDoctors)
             
             AccountView()
                 .tabItem {
-                    Label("Account", systemImage: "person.circle")
+                    Label("Mi Cuenta", systemImage: "person.circle")
                 }
                 .tag(TabSelection.account)
         }

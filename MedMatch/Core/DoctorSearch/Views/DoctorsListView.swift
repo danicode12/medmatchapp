@@ -12,11 +12,11 @@ struct DoctorListView: View {
     
     var body: some View {
         ZStack {
-            // Add explicit white background
+            // Background color that extends to all edges
             Color.white
                 .edgesIgnoringSafeArea(.all)
             
-            VStack {
+            VStack(spacing: 12) {
                 // Search filters summary bar
                 HStack {
                     Button(action: {
@@ -25,8 +25,9 @@ struct DoctorListView: View {
                         HStack {
                             Image(systemName: "slider.horizontal.3")
                                 .foregroundColor(.black)
-                            Text("Filters")
+                            Text("Filtros")
                                 .foregroundColor(.black)
+                                .fontWeight(.medium)
                         }
                         .padding(.vertical, 8)
                         .padding(.horizontal, 12)
@@ -40,12 +41,13 @@ struct DoctorListView: View {
                         ProgressView()
                             .progressViewStyle(CircularProgressViewStyle())
                     } else {
-                        Text("\(viewModel.doctors.count) doctors found")
+                        Text("\(viewModel.doctors.count) médicos encontrados")
                             .font(.caption)
                             .foregroundColor(.gray)
                     }
                 }
                 .padding(.horizontal)
+                .padding(.bottom, 4)
                 
                 if viewModel.isLoading && viewModel.doctors.isEmpty {
                     Spacer()
@@ -60,53 +62,62 @@ struct DoctorListView: View {
                             .font(.system(size: 50))
                             .foregroundColor(.gray.opacity(0.5))
                         
-                        Text("No doctors found")
+                        Text("No se encontraron médicos")
                             .font(.title2)
                             .fontWeight(.bold)
                             .foregroundColor(.black)
                         
-                        Text("Try adjusting your search criteria")
+                        Text("Intente ajustar sus criterios de búsqueda")
                             .foregroundColor(.gray)
                     }
                     Spacer()
                 } else {
-                    List {
-                        ForEach(viewModel.doctors) { doctor in
-                            NavigationLink(destination: DoctorDetailView(doctorId: doctor.id)) {
-                                DoctorListItemView(doctor: doctor)
+                    ScrollView {
+                        LazyVStack(spacing: 12) {
+                            ForEach(viewModel.doctors) { doctor in
+                                NavigationLink(destination: DoctorDetailView(doctorId: doctor.id)) {
+                                    DoctorListItemView(doctor: doctor)
+                                        .padding(.horizontal)
+                                        .padding(.vertical, 10)
+                                        .background(Color.white)
+                                        .cornerRadius(10)
+                                        .shadow(color: Color.black.opacity(0.05), radius: 5, x: 0, y: 2)
+                                }
+                                .buttonStyle(PlainButtonStyle())
                             }
-                            .listRowBackground(Color.white)
-                        }
-                        
-                        if viewModel.canLoadMore {
-                            HStack {
-                                Spacer()
+                            
+                            if viewModel.canLoadMore {
                                 Button(action: {
                                     viewModel.loadMoreDoctors()
                                 }) {
-                                    if viewModel.isLoadingMore {
-                                        ProgressView()
-                                            .progressViewStyle(CircularProgressViewStyle())
-                                    } else {
-                                        Text("Load More")
-                                            .foregroundColor(.blue)
+                                    HStack {
+                                        Spacer()
+                                        
+                                        if viewModel.isLoadingMore {
+                                            ProgressView()
+                                                .progressViewStyle(CircularProgressViewStyle())
+                                        } else {
+                                            Text("Cargar Más")
+                                                .fontWeight(.medium)
+                                                .foregroundColor(.blue)
+                                        }
+                                        
+                                        Spacer()
                                     }
+                                    .padding()
+                                    .background(Color.white)
+                                    .cornerRadius(10)
                                 }
-                                .padding()
-                                Spacer()
+                                .padding(.vertical, 8)
                             }
-                            .listRowBackground(Color.white)
                         }
+                        .padding(.horizontal, 12)
                     }
-                    .listStyle(InsetGroupedListStyle())
-                    .background(Color.white)
-                    .onAppear {
-                        UITableView.appearance().backgroundColor = .white
-                    }
+                    .background(Color(UIColor.systemGroupedBackground))
                 }
             }
         }
-        .navigationTitle("\(specialty?.name ?? "Doctors") near \(location)")
+        .navigationTitle("\(specialty?.name ?? "Médicos") cerca de \(location)")
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
             viewModel.searchDoctors(
@@ -115,6 +126,9 @@ struct DoctorListView: View {
                 specialty: specialty,
                 insurance: insurance
             )
+            
+            // Ensure we have a consistent background appearance
+            UIScrollView.appearance().backgroundColor = UIColor.systemGroupedBackground
         }
         .sheet(isPresented: $showingFilterSheet) {
             DoctorFilterView(
@@ -159,7 +173,7 @@ struct DoctorListItemView: View {
                     .clipShape(Circle())
             }
             
-            VStack(alignment: .leading, spacing: 4) {
+            VStack(alignment: .leading, spacing: 6) {
                 Text(doctor.name)
                     .font(.headline)
                     .foregroundColor(.black)
@@ -168,16 +182,17 @@ struct DoctorListItemView: View {
                     .font(.subheadline)
                     .foregroundColor(.gray)
                 
-                HStack {
+                HStack(spacing: 2) {
                     ForEach(0..<5) { i in
                         Image(systemName: i < Int(doctor.rating) ? "star.fill" : "star")
                             .font(.caption)
-                            .foregroundColor(.customGreen)
+                            .foregroundColor(.yellow) // Changed from .customGreen to .yellow
                     }
                     
                     Text("(\(doctor.reviewCount))")
                         .font(.caption)
                         .foregroundColor(.gray)
+                        .padding(.leading, 2)
                 }
                 
                 HStack {
@@ -198,21 +213,21 @@ struct DoctorListItemView: View {
                 if let nextAvailable = doctor.availableTimes.first {
                     Text(formatDate(nextAvailable))
                         .font(.caption)
+                        .fontWeight(.medium)
                         .foregroundColor(.blue)
-                        .padding(.vertical, 4)
-                        .padding(.horizontal, 8)
+                        .padding(.vertical, 5)
+                        .padding(.horizontal, 10)
                         .background(Color.blue.opacity(0.1))
-                        .cornerRadius(4)
+                        .cornerRadius(6)
                 }
             }
         }
-        .padding(.vertical, 8)
-        .background(Color.white)
     }
     
     private func formatDate(_ date: Date) -> String {
         let formatter = DateFormatter()
-        formatter.dateFormat = "MMM d"
+        formatter.dateFormat = "d MMM"
+        formatter.locale = Locale(identifier: "es_ES")
         return formatter.string(from: date)
     }
 }
